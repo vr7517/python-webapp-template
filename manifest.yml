@@ -1,0 +1,6 @@
+---
+applications:
+ - name: template-app
+   host: aoun-template-app
+   memory: 128M
+   buildpack: python_buildpack
