@@ -3,3 +3,9 @@ vcap-local.json
 
 .vscode
 .git
+
+venv/
+env/
+
+README.md
+images/
