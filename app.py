@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import os
 
 app = Flask(__name__)
@@ -66,7 +66,6 @@ def load_user(uid):
 
     return User(1, "aoun", "IBM@123") 
 
-
 ############
 ### CHAT ###
 ############
@@ -76,6 +75,13 @@ def load_user(uid):
 @app.route('/chat')
 def chat():
     return render_template('chat.html')
+
+@app.route('/api/message', methods=['GET'])
+def message():
+
+    msg = request.args.get('msg')
+
+    return "Have a reply"
 
 ############
 ### MAIN ###
@@ -96,6 +102,14 @@ def add_header(response):
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/api/api-name', methods=['GET'])
+def api():
+
+    req = request.args.get('request')
+
+    return "test"
+
 
 ## Main ##
 

@@ -3,7 +3,7 @@ A template python web app that includes common web pages. Will be continuously u
 
 ## Requirements
 
-Written for Python 2.7 with minimal dependencies (in `requirements.txt`):
+Written for Python 2 and 3 with minimal dependencies (in `requirements.txt`):
 
 * Flask
 * (optional - for login) flask-login
@@ -27,6 +27,8 @@ You can remove the UI pages you don't need by removing their relevant files in `
 * `app.py` contains the Flask server.
 * `functions/` contains utilities and functionalities, this is to be used to avoid cluttering the main app file. 
 * The different UI routes (and their relevant methods) are sectioned in `app.py`. You can remove any sections which you don't need.
+* APIs: APIs sample is implimented in `/api/api-name` route, modify te content and/or route name as per your needs
+* Chat: impliment the chat functionality in the `api/message` route.
 
 ## Cloud Foundry
 

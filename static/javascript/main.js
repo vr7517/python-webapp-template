@@ -30,6 +30,11 @@ function sendRequest(request) {
         });
 }
 
+function doSomething(response){
+
+};
+
+
 $('#input').keydown(function (e) {
     var data = $('#input').val();
     if (e.which == 13 && data.length > 0) { //catch Enter key
