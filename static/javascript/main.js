@@ -5,22 +5,22 @@ $('document').ready(function () {
 
 function loading(ennable) {
     if (ennable) {
-        $('#loader').removeClass('hidden');
-        $('#input').attr('disabled', "");
-        $('#submit').prop('disabled', true);
+        $('#text-loader').removeClass('gone');
+        $('#text-input').attr('disabled', "");
+        $('#text-submit').prop('disabled', true);
     } else {
-        $('#loader').addClass('hidden');
-        $('#input').removeAttr('disabled');
-        $('#submit').prop('disabled', false);
+        $('#text-loader').addClass('gone');
+        $('#text-input').removeAttr('disabled');
+        $('#text-submit').prop('disabled', false);
     }
 }
 
 function sendRequest(request) {
     loading(true);
-    $('#input').val('');
+    $('#text-input').val('');
     $.ajax({
         method: "GET",
-        url: "./api/api-name",
+        url: "./api/get-api",
         contentType: "application/text",
         data: { "request": request }
     })
@@ -30,21 +30,78 @@ function sendRequest(request) {
         });
 }
 
-function doSomething(response){
-
+function doSomething(response) {
+    console.log(response)
+    $('#text-result').text(response);
 };
 
 
-$('#input').keydown(function (e) {
-    var data = $('#input').val();
-    if (e.which == 13 && data.length > 0) { //catch Enter key
+$('#text-input').keydown(function (e) {
+    var data = $('#text-input').val();
+    if (e.which == 13 && data.length > 0) {
         sendRequest(data);
     }
 });
 
-$('#submit').click(function (e) {
-    var data = $('#input').val();
+$('#text-submit').click(function (e) {
+    var data = $('#text-input').val();
     if (data.length > 0) {
         sendRequest(data);
     }
 });
+
+
+$("#img-input").change(function () {
+    var preview = document.getElementById('img');
+
+    $('#img-results').html('')
+    $('#img-loader').removeClass('gone')
+
+    var file = document.getElementById('img-input').files[0];
+    var isSuccess = checkFileType(file);
+    var reader = new FileReader();
+
+    if (isSuccess) {
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+            preview.style.display = 'inline'
+            preview.style.height = '100%';
+
+            var form = new FormData($('#form')[0]);
+            
+            $.ajax({
+                url: '/api/post-api',
+                type: 'POST',
+                data: form,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    update(result);
+                }
+            });
+
+
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+    } else {
+        alert('incorrect file type, please upload a JPG, JPEG, or PNG image.')
+    }
+
+});
+
+function checkFileType(file){
+    fileTypes = ['jpg', 'jpeg', 'png'];
+    extension = file.name.split('.').pop().toLowerCase()
+    return fileTypes.indexOf(extension) > -1;
+}
+
+function update(result) {
+    console.log(result);
+    $('#img-results').html(result)
+    $('#img-loader').addClass('gone')
+}
