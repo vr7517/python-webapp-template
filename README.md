@@ -7,6 +7,7 @@ Written for Python 2 and 3 with minimal dependencies (in `requirements.txt`):
 
 * Flask
 * (optional - for login) flask-login
+* (Optional - for image upload) pillow
 
 ## UI
 
@@ -14,7 +15,8 @@ UI content inlcudes:
 
  * Login
  * Chat
- * Simple input
+ * Simple Input
+ * Image Upload
  
 You can remove the UI pages you don't need by removing their relevant files in `templates/`, `static/stylesheets/`, and 'static/javascript'. 
 
@@ -27,7 +29,7 @@ You can remove the UI pages you don't need by removing their relevant files in `
 * `app.py` contains the Flask server.
 * `functions/` contains utilities and functionalities, this is to be used to avoid cluttering the main app file. 
 * The different UI routes (and their relevant methods) are sectioned in `app.py`. You can remove any sections which you don't need.
-* APIs: APIs sample is implimented in `/api/api-name` route, modify te content and/or route name as per your needs
+* APIs: APIs sample is implimented in `/api/...` route, modify te content and/or route name as per your needs. There is one route handle a GET request and another route for POST request. The POST request handles image upload through forms.
 * Chat: impliment the chat functionality in the `api/message` route.
 
 ## Cloud Foundry
