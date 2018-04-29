@@ -1,8 +1,10 @@
 
+// run on ducument read
 $('document').ready(function () {
 
 });
 
+// Text input and GET request
 function loading(ennable) {
     if (ennable) {
         $('#text-loader').removeClass('gone');
@@ -50,6 +52,8 @@ $('#text-submit').click(function (e) {
     }
 });
 
+
+// Image input and POST request 
 
 $("#img-input").change(function () {
     var preview = document.getElementById('img');
