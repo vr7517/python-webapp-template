@@ -61,6 +61,7 @@ target/
 # Mac files
 *.DS_Store
 
-vcap-local.json
+# Additional files
+# vcap-local.json ## Uncomment this after you add your credentials
 .vscode
 .git

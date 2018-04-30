@@ -1,0 +1,38 @@
+{
+    "watson_vision_combined": [
+        {
+            "credentials": {
+                "url": "https://gateway-a.watsonplatform.net/visual-recognition/api",
+                "note": "This is your previous free key. If you want a different one, please wait 24 hours after unbinding the key and try again.",
+                "api_key": "******************"
+            }
+        }
+    ],
+    "conversation": [
+        {
+            "credentials": {
+                "url": "https://gateway.watsonplatform.net/conversation/api",
+                "username": "******************",
+                "password": "******************"
+            }
+        }
+    ],
+    "text_to_speech": [
+        {
+            "credentials": {
+                "url": "https://stream.watsonplatform.net/text-to-speech/api",
+                "username": "******************",
+                "password": "******************"
+            }
+        }
+    ],
+    "speech_to_text": [
+        {
+            "credentials": {
+                "url": "https://stream.watsonplatform.net/speech-to-text/api",
+                "username": "******************",
+                "password": "******************"
+            }
+        }
+    ]
+}
