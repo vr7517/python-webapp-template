@@ -14,11 +14,13 @@ function newMessage() {
 };
 
 function sendRequest(message) {
+
+    req = { "msg": message }
+
     $.ajax({
-        method: "GET",
+        method: "POST",
         url: "./api/message",
-        contentType: "application/text",
-        data: { "msg": message }
+        data: req
     })
         .done(function (response) {
             newReply(response);

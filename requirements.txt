@@ -1,3 +1,4 @@
 Flask
 pillow
 flask-login
+watson_developer_cloud

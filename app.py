@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # # Required for login
 from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
-from flask import flash, redirect, url_for, request
+from flask import flash, redirect, url_for, request, Response, abort
 from functions.auth_user import auth
 
 # Secret Key to use for login
@@ -70,19 +70,54 @@ def load_user(uid):
 ### CHAT ###
 ############
 
+from flask import session
+from watson_developer_cloud import ConversationV1
+from functions.vcap import getService
+
+## Watson Assistant ##
+
+user, passw, url = getService('conversation')
+
+conversation = ConversationV1(
+	version='2018-02-16',
+	username=user,
+	password=passw,
+	url=url
+)
+
 ## Chat page ##
 
 @app.route('/chat')
 def chat():
+    
+    session.clear()
     return render_template('chat.html')
 
 ## Chat GET Request handler ##
 
-@app.route('/api/message', methods=['GET'])
+@app.route('/api/message', methods=['POST'])
 def message():
 
-    msg = request.args.get('msg')
-    print(msg)
+    msg = request.form.get('msg')
+    
+    if 'context' not in session:
+        session['context'] = {}
+
+    print('message', msg)
+    print('context', session['context'])
+
+    ## Watson Assistant ##
+
+    r = conversation.message(
+        workspace_id='**************', 
+        message_input=msg, 
+        context=session['context']
+        )
+
+    session['context'] = r['context']
+    reply = r['output']['text'][0]
+
+    ## Watson Assistant END ##
 
     return "Have a reply"
 

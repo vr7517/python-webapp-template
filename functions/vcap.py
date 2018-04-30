@@ -14,9 +14,9 @@ def getService(name):
         with open('vcap-local.json') as f:
             vcap = json.load(f)
             print('Found local VCAP_SERVICES')
-            creds = vcap['services'][name][0]['credentials']
+            creds = vcap[name][0]['credentials']
             user = creds['username']
             password = creds['password']
-            url = 'https://' + creds['host']
+            url = 'https://' + creds['url']
             return (user, password, url)
 
