@@ -1,6 +1,7 @@
 ---
 applications:
  - name: template-app
-   host: aoun-template-app
+   routes: 
+   - route: aoun-template.mybluemix.net
    memory: 128M
    buildpack: python_buildpack
