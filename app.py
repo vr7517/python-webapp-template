@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 # # Required for login
 from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
-from flask import flash, redirect, url_for, request, Response, abort
-from functions.auth_user import auth
+from flask import redirect, url_for, Response, abort
+from functions.auth_user import auth, getUser
 
 # Secret Key to use for login
 app.config.update(SECRET_KEY = 'aoun@ibm')
@@ -23,13 +23,21 @@ login_manager.login_view = "login"
 # user model for login
 class User(UserMixin):
 
-    def __init__(self, id, name, password):
-        self.id = id
-        self.name = name
-        self.password = password
+	def __init__(self, id, name):
+		self.id = id
+		self.name = name
         
-    def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
+	def __repr__(self):
+		return "%d/%s" % (self.id, self.name)
+
+	def get_id(self):
+		return self.id
+	
+	def is_anonymous(self):
+		return False
+
+	def is_active(self):
+		return True
 
 ## Login methods ##
 
@@ -38,10 +46,10 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password'] 
-        success, uid = auth(username, password)    
+        success, uid = auth(username, password) 
+
         if(success):
-            login_user(User(uid, username, password))
-            flash('Logged in successfully.')
+            login_user(User(uid, username))
             return redirect(url_for('home'))
         else:
             return abort(401)
@@ -53,6 +61,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     return url_for('login')
 
 # handle login failed
@@ -64,7 +73,7 @@ def page_not_found(e):
 @login_manager.user_loader
 def load_user(uid):
 
-    return User(1, "aoun", "IBM@123") 
+    return User(uid, getUser(uid)) 
 
 ############
 ### CHAT ###
@@ -103,23 +112,32 @@ def message():
     if 'context' not in session:
         session['context'] = {}
 
+    if 'input' in msg:
+        text = {'text': msg}
+    else:
+        text = { 'text': '' }
+
+    reply = 'Have a reply'
+    
     print('message', msg)
     print('context', session['context'])
 
     ## Watson Assistant ##
+    try:
+        r = conversation.message(
+            workspace_id='**************', 
+            message_input=text, 
+            context=session['context']
+            ).get_result()
 
-    r = conversation.message(
-        workspace_id='**************', 
-        message_input=msg, 
-        context=session['context']
-        )
-
-    session['context'] = r['context']
-    reply = r['output']['text'][0]
-
+        session['context'] = r['context']
+        reply = r['output']['text'][0]
+    except Exception as e:
+        print(e)
+        return repr(e)
     ## Watson Assistant END ##
 
-    return "Have a reply"
+    return reply
 
 ############
 ### MAIN ###

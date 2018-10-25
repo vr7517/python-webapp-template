@@ -2,21 +2,24 @@
 # functions to auth login
 #
 
-import json, os
+import json
 
 def auth(username, password):
 
-    if password == "IBM@123" and username == "aoun":
-        return True, 1
-    else:
-        return False, None
+    db = json.load(open('users.json', 'r'))['users']
+    valid = False
+    id = None
 
-def checkID(id):
+    for u in db:
+        if u['name']==username and u['pass']==password:
+            valid = True
+            id = u['id']
 
-    client = getClient()
-    users_db = client['users']
-    
-    for u in users_db:
+    return valid, id
+
+def getUser(id):
+    db = json.load(open('users.json', 'r'))['users']
+    for u in db:
         if u['id']==id:
-            client.disconnect()
-            return ({"name":u['name'], "password":u['password'], "id":u['id']})
+            return u['name']
+    return None
