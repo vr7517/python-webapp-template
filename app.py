@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # # Required for login
 from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
-from flask import redirect, url_for, Response, abort
+from flask import redirect, url_for, Response, abort, session
 from functions.auth_user import auth, getUser
 
 # Secret Key to use for login
@@ -62,7 +62,7 @@ def login():
 def logout():
     logout_user()
     session.clear()
-    return url_for('login')
+    return redirect('login')
 
 # handle login failed
 @app.errorhandler(401)
