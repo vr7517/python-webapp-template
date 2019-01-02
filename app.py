@@ -1,5 +1,20 @@
-from flask import Flask, render_template, request
-import os, time
+from flask import Flask, render_template, request, jsonify
+import os
+import time
+
+# Assistant
+from functions.vcap import getService
+from watson_developer_cloud import AssistantV1
+from functions.auth_user import auth, getUser
+
+# Login
+from flask import redirect, url_for, Response, abort, session
+from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
+
+# Image
+import io
+from PIL import Image
+
 
 app = Flask(__name__)
 
@@ -8,12 +23,9 @@ app = Flask(__name__)
 #############
 
 # # Required for login
-from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
-from flask import redirect, url_for, Response, abort, session
-from functions.auth_user import auth, getUser
 
 # Secret Key to use for login
-app.config.update(SECRET_KEY = 'aoun@ibm')
+app.config.update(SECRET_KEY='aoun@ibm')
 
 # flask-login
 login_manager = LoginManager()
@@ -21,32 +33,35 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 # user model for login
+
+
 class User(UserMixin):
 
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
-        
-	def __repr__(self):
-		return "%d/%s" % (self.id, self.name)
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
 
-	def get_id(self):
-		return self.id
-	
-	def is_anonymous(self):
-		return False
+    def __repr__(self):
+        return "%d/%s" % (self.id, self.name)
 
-	def is_active(self):
-		return True
+    def get_id(self):
+        return self.id
+
+    def is_anonymous(self):
+        return False
+
+    def is_active(self):
+        return True
 
 ## Login methods ##
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password'] 
-        success, uid = auth(username, password) 
+        password = request.form['password']
+        success, uid = auth(username, password)
 
         if(success):
             login_user(User(uid, username))
@@ -56,7 +71,9 @@ def login():
     else:
         return render_template("login.html")
 
-#logout API
+# logout API
+
+
 @app.route("/logout", methods=["GET"])
 @login_required
 def logout():
@@ -65,73 +82,72 @@ def logout():
     return redirect('login')
 
 # handle login failed
+
+
 @app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed, Invalid username or password</p>')
 
-# callback to reload the user object        
+# callback to reload the user object
+
+
 @login_manager.user_loader
 def load_user(uid):
 
-    return User(uid, getUser(uid)) 
+    return User(uid, getUser(uid))
 
 ############
 ### CHAT ###
 ############
 
-from flask import session
-from watson_developer_cloud import ConversationV1
-from functions.vcap import getService
 
 ## Watson Assistant ##
+api, url = getService('assistant')
 
-user, passw, url = getService('conversation')
-
-conversation = ConversationV1(
-	version='2018-02-16',
-	username=user,
-	password=passw,
-	url=url
+conversation = AssistantV1(
+    version='2018-09-20',
+    iam_apikey=api,
+    url=url
 )
 
 ## Chat page ##
 
+
 @app.route('/chat')
 def chat():
-    
+
     session.clear()
     return render_template('chat.html')
 
 ## Chat GET Request handler ##
 
+
 @app.route('/api/message', methods=['POST'])
 def message():
 
     msg = request.form.get('msg')
-    
+
     if 'context' not in session:
         session['context'] = {}
 
     if 'input' in msg:
         text = {'text': msg}
     else:
-        text = { 'text': '' }
+        text = {'text': ''}
 
     reply = 'Have a reply'
-    
-    print('message', msg)
-    print('context', session['context'])
 
     ## Watson Assistant ##
     try:
         r = conversation.message(
-            workspace_id='**************', 
-            message_input=text, 
+            workspace_id='**************',
+            input=text,
             context=session['context']
-            ).get_result()
+        ).get_result()
 
         session['context'] = r['context']
         reply = r['output']['text'][0]
+
     except Exception as e:
         print(e)
         return repr(e)
@@ -145,6 +161,7 @@ def message():
 
 ## Main methods ##
 
+
 @app.after_request
 def add_header(response):
     """
@@ -155,42 +172,71 @@ def add_header(response):
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
-## GET Reques handler ## 
+## GET Request handler ##
 
-@app.route('/api/get-api', methods=['GET'])
+
+@app.route('/api/post', methods=['POST'])
 def getApi():
 
-    req = request.args.get('request')
-    print(req)
+    try:
 
-    time.sleep(2)
+        print(request.form)
+        req = request.form.to_dict()['request']
+        print(req)
 
-    return "Test Response"
+        time.sleep(2)
+
+        return jsonify({'response': "POST Response"})
+
+    except Exception as e:
+        return jsonify({"error": repr(e)})
+
+## GET Request handler ##
+
+@app.route('/api/get', methods=['GET'])
+def postApi():
+
+    try:
+
+        req = request.args.get('request')
+        print(req)
+
+        time.sleep(2)
+
+        return jsonify({'response': "Get Response"})
+
+    except Exception as e:
+        return jsonify({"error": repr(e)})
 
 
-###################################
-### POST Request Image Handling ###
-###################################
-from PIL import Image
-import io
+######################
+### Image Handling ###
+######################
 
-@app.route('/api/post-api', methods=['POST'])
+
+@app.route('/api/image', methods=['POST'])
 def postAPI():
 
-    data = request.files.get('image').read()
-    
-    image = Image.open(io.BytesIO(data))
-    image.save('images/temp.png')
-        
-    time.sleep(2)
-    
-    return "Done Saving Image"
+    try:
+        data = request.files.get('image').read()
+
+        image = Image.open(io.BytesIO(data))
+        image.save('images/temp.png')
+
+        time.sleep(2)
+
+        return jsonify({'response': "Done Saving Image"})
+
+    except Exception as e:
+        return jsonify({"error": repr(e)})
 
 ## Main ##
+
 
 if __name__ == '__main__':
 

@@ -1,5 +1,5 @@
 
-.text-loader {
+.loader {
     position: absolute;
     width: 150px;
     height: 150px;
@@ -31,11 +31,6 @@
 
 form {
     margin: 0 2em auto;
-}
-
-card {
-    margin: 0 auto; 
-    float: none; 
 }
 
 .image-holder {
