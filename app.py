@@ -6,6 +6,7 @@ import time
 from functions.vcap import getService
 from watson_developer_cloud import AssistantV1
 from functions.auth_user import auth, getUser
+from flask import session
 
 # Login
 from flask import redirect, url_for, Response, abort, session
@@ -100,6 +101,8 @@ def load_user(uid):
 ### CHAT ###
 ############
 
+# Secret Key to use for session
+app.config.update(SECRET_KEY='aoun@ibm')
 
 ## Watson Assistant ##
 api, url = getService('assistant')
