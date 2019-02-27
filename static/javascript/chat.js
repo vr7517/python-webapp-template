@@ -2,12 +2,13 @@
 $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
 function newMessage() {
-    message = $(".message-input input").val();
+    message = $("#q").val();
+    console.log(message)
     if ($.trim(message) == '') {
         return false;
     }
     $('<li class="sent"><img src="static/images/user.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-    $('.message-input input').val(null);
+    $('#q').val(null);
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
     sendRequest(message);
@@ -34,7 +35,7 @@ function newReply(message) {
     }
 
     $('<li class="replies"><img src="static/images/watson_avatar.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-    $('.message-input input').val(null);
+    $('#q').val(null);
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 };
 
