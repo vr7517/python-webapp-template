@@ -4,8 +4,13 @@
 }
 
 .card {
-    margin: 5% 0 5%; 
-    height: 85vh;
+    margin-top: 2em; 
+    height: 90vh;
+}
+
+.card-body {
+    padding: 0;
+    padding-top: 1rem;
 }
 
 input[type=number] {
@@ -19,22 +24,22 @@ input::-webkit-inner-spin-button {
 }
 
 .card-header img {
-    margin-right: 5px;
-    height: 2em;
+    margin-right: 1rem;
+    height: 2rem;
 }
 
 .contact-profile {
     width: 100%;
-    height: 60px;
+    height: 5rem;
     background: black;
     color: white
 }
 
 .contact-profile img {
-    width: 40px;
+    width: 4rem;
     border-radius: 50%;
     float: left;
-    margin: 9px 12px 0 9px;
+    margin: 0.75rem 1.25rem 0 0.75rem;
 }
 
 .contact-profile p {
@@ -44,7 +49,7 @@ input::-webkit-inner-spin-button {
 .messages {
     height: auto;
     min-height: 100%;
-    max-height: 100%;
+    max-height: 50vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -61,17 +66,16 @@ input::-webkit-inner-spin-button {
 .messages ul li {
     display: inline-block;
     clear: both;
-    margin: 15px 15px 5px 15px;
-    width: calc(100% - 25px);
+    width: calc(100% - 1rem);
     font-size: 0.9em;
 }
 
 .messages ul li:nth-last-child(1) {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
 }
 
 .messages ul li.sent img {
-    margin: 6px 8px 0 0;
+    margin: 0.5rem 0.75rem 0 0;
 }
 
 .messages ul li.sent p {
@@ -81,7 +85,7 @@ input::-webkit-inner-spin-button {
 
 .messages ul li.replies img {
     float: right;
-    margin: 6px 0 0 8px;
+    margin: 0.6rem 0 0 0.75rem;
 }
 
 .messages ul li.replies p {
@@ -91,15 +95,15 @@ input::-webkit-inner-spin-button {
 }
 
 .messages ul li img {
-    width: 22px;
+    width: 2rem;
     border-radius: 50%;
     float: left;
 }
 
 .messages ul li p {
     display: inline-block;
-    padding: 10px 15px;
-    border-radius: 20px;
-    max-width: 205px;
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    max-width: 75%;
     line-height: 130%;
 }
