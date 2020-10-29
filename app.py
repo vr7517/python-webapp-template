@@ -33,7 +33,7 @@ def add_header(response):
 app.config.from_object('config.BaseConfig')
 
 @app.route('/')
-def index():
+def home():
     '''Returns a static HTML page'''
 
     return render_template('index.html')
