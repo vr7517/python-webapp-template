@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="stylegrid.css">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/external/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    
 <style>
  .content {
   max-width: 1600px;
@@ -205,8 +210,7 @@ function showDivs(n) {
 <p>____________________________________________________________________________________________________________________________________</p>
  
  <!-- The Band Section -->
- <div class="embed-container" style="max-width:100%"  
-   id="report-container" >
+ <div class="embed-container"  id="report-container" >
   
   </div>
 
@@ -354,6 +358,9 @@ window.onclick = function(event) {
   }
 }
 </script>
-
+  <script src="{{ url_for('static', filename='js/external/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/external/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/external/powerbi.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
