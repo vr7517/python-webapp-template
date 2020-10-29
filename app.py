@@ -6,161 +6,10 @@ import os
 import requests
 import time
 
-# Assistant
-from functions.vcap import getService
-from watson_developer_cloud import AssistantV1
-from functions.auth_user import auth, getUser
-from flask import session
-
-# Login
-from flask import redirect, url_for, Response, abort, session
-from flask_login import LoginManager, login_required, login_user, logout_user, UserMixin
-
-# Image
-import io
-from PIL import Image
 
 
 app = Flask(__name__)
 
-#############
-### LOGIN ###
-#############
-
-# # Required for login
-
-# Secret Key to use for login
-app.config.update(SECRET_KEY='aoun@ibm')
-
-# flask-login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
-
-# user model for login
-
-
-class User(UserMixin):
-
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
-    def __repr__(self):
-        return "%d/%s" % (self.id, self.name)
-
-    def get_id(self):
-        return self.id
-
-    def is_anonymous(self):
-        return False
-
-    def is_active(self):
-        return True
-
-## Login methods ##
-
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        success, uid = auth(username, password)
-
-        if(success):
-            login_user(User(uid, username))
-            return redirect(url_for('home'))
-        else:
-            return abort(401)
-    else:
-        return render_template("login.html")
-
-# logout API
-
-
-@app.route("/logout", methods=["GET"])
-@login_required
-def logout():
-    logout_user()
-    session.clear()
-    return redirect('login')
-
-# handle login failed
-
-
-@app.errorhandler(401)
-def page_not_found(e):
-    return Response('<p>Login failed, Invalid username or password</p>')
-
-# callback to reload the user object
-
-
-@login_manager.user_loader
-def load_user(uid):
-
-    return User(uid, getUser(uid))
-
-############
-### CHAT ###
-############
-
-# Secret Key to use for session
-app.config.update(SECRET_KEY='aoun@ibm')
-
-## Watson Assistant ##
-api, url = getService('assistant')
-
-conversation = AssistantV1(
-    version='2018-09-20',
-    iam_apikey=api,
-    url=url
-)
-
-## Chat page ##
-
-
-@app.route('/chat')
-def chat():
-
-    session.clear()
-    return render_template('chat.html')
-
-## Chat GET Request handler ##
-
-
-@app.route('/api/message', methods=['POST'])
-def message():
-
-    msg = request.form.get('msg')
-
-    if 'context' not in session:
-        session['context'] = {}
-
-    if 'input' in msg:
-        text = {'text': msg}
-    else:
-        text = {'text': ''}
-
-    reply = 'Have a reply'
-
-    ## Watson Assistant ##
-    try:
-        r = conversation.message(
-            workspace_id='**************',
-            input=text,
-            context=session['context']
-        ).get_result()
-
-        session['context'] = r['context']
-        reply = r['output']['text'][0]
-
-    except Exception as e:
-        print(e)
-        return repr(e)
-    ## Watson Assistant END ##
-
-    return reply
 
 ############
 ### MAIN ###
@@ -305,5 +154,5 @@ def postAPI():
 
 if __name__ == '__main__':
 
-    port = int(os.getenv('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)
+
+    app.run
